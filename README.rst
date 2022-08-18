@@ -14,6 +14,8 @@ Features
 - Extract files from ``.arcd``. Compressed and encrypted files supported.
 - Inspect ``.texturec`` files
 - Extract ``.texturec`` files
+- Inspect ``.luac`` files (compiled Lua files)
+- Extract ``.luac`` Lua source code
 
 Decryption is only supported when the default Defold encryption key is used.
 
@@ -60,14 +62,45 @@ Extract a single file from the archive::
 
 Extract a ``.texturec`` and all textures contained inside::
 
-    $ arcdEx archive -v -t --outdir=extract test.arcd /assets/images/game/game.texturec
+    $ arcdEx archive -v --extract-textures --outdir=extract test.arcd /assets/images/game/game.texturec
     Extracting "/assets/images/game/game.texturec" to "/home/user/extract/assets/images/game/game.texturec"
      Extracting texturec file: /home/user/extract/assets/images/game/game.texturec
       Writing game.texturec-0
 
 
-Texture
--------
+Extract a ``.luac`` and the Lua source code inside it::
+
+    $ arcdEx archive -v --extract-lua --outdir=extract test.arcd /scenes/win_scene/win_scene.luac
+    Extracting "/scenes/win_scene/win_scene.luac" to "/home/user/extract/scenes/win_scene/win_scene.luac"
+     Writing /home/user/extract/scenes/win_scene/win_scene.lua
+
+
+Lua scripts
+-----------
+Show information about a ``.luac`` file::
+
+    $ arcdEx lua -i extract/libs_project/cameras.luac
+    Filename: libs_project/cameras.lua
+    Script size: 1006
+    Required modules:
+    - libs.common
+    - libs.rendercam_camera
+    Required resources:
+    - /libs/common.luac
+    - /libs/rendercam_camera.luac
+
+Extract the Lua source code from a ``.luac`` file::
+
+    $ arcdEx lua -v extract/libs_project/cameras.luac
+    Writing /home/user/extract/libs_project/cameras.lua
+
+    $ head -n2 extract/libs_project/cameras.lua
+    local LEVELS = require "world.game.levels.levels"
+    local WORLD = require "world.world"
+
+
+Textures
+--------
 Show information about a ``.texturec`` file::
 
     $ arcdEx texture -i extract/assets/images/game/game.texturec

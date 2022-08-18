@@ -25,7 +25,10 @@ public class ArchiveCommand {
     @Parameter(names = {"-l", "--list"}, description = "List archive contents")
     protected boolean list = false;
 
-    @Parameter(names = {"-t", "--extract-textures"}, description = "Extract textures from .texturec files")
+    @Parameter(names = "--extract-lua", description = "Extract Lua scripts from .luac files")
+    protected boolean extractLua = false;
+
+    @Parameter(names = "--extract-textures", description = "Extract textures from .texturec files")
     protected boolean extractTextures = false;
 
     @Parameter(names = {"-f", "--filter"}, description = "File extension filter")
@@ -138,6 +141,8 @@ public class ArchiveCommand {
 
                 if (extractTextures && entry.fileName.endsWith(".texturec")) {
                     TextureCommand.extract(fo.getAbsolutePath(), verbose, " ");
+                } else if (extractLua && entry.fileName.endsWith(".luac")) {
+                    LuaCommand.extract(fo.getAbsolutePath(), verbose, " ");
                 }
             } catch (IOException e) {
                 System.out.println("Error extracting: " + e.getMessage());

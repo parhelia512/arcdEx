@@ -14,9 +14,11 @@ public class Cli {
         Cli cli = new Cli();
         ArchiveCommand archive = new ArchiveCommand();
         TextureCommand texture = new TextureCommand();
+        LuaCommand lua = new LuaCommand();
         JCommander jc = JCommander.newBuilder()
                 .addObject(cli)
                 .addCommand("archive", archive)
+                .addCommand("lua", lua)
                 .addCommand("texture", texture)
                 .build();
 
@@ -38,6 +40,9 @@ public class Cli {
         switch (jc.getParsedCommand()) {
             case "archive":
                 archive.run();
+                break;
+            case "lua":
+                lua.run();
                 break;
             case "texture":
                 texture.run();

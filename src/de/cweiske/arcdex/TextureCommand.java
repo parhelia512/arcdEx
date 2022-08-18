@@ -13,7 +13,7 @@ public class TextureCommand {
     @Parameter(description = "<.texturec file path>", required = true)
     protected String texturecPath;
 
-    @Parameter(names = "-i", description = "Show texture information")
+    @Parameter(names = "-i", description = "Show texture information. Do not extract.")
     protected boolean info = false;
 
     @Parameter(names = {"-v", "--verbose"}, description = "Show names of extracted files")
