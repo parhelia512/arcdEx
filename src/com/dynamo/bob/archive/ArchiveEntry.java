@@ -17,8 +17,9 @@ package com.dynamo.bob.archive;
 import java.io.IOException;
 import java.io.File;
 
-import org.apache.commons.io.FilenameUtils;
-
+/**
+ * 1:1 copy of ArchiveEntry, but without org.apache.commons.io.FilenameUtils dependency.
+ */
 public class ArchiveEntry implements Comparable<ArchiveEntry> {
     public static final int FLAG_ENCRYPTED = 1 << 0;
     public static final int FLAG_COMPRESSED = 1 << 1;
@@ -69,8 +70,15 @@ public class ArchiveEntry implements Comparable<ArchiveEntry> {
             this.flags = this.flags | FLAG_LIVEUPDATE;
         }
 
-        this.relName = FilenameUtils.separatorsToUnix(fileName.substring(root.length()));
+        this.relName = separatorsToUnix(fileName.substring(root.length()));
         this.fileName = fileName;
+    }
+
+    /**
+     * Copied from org.apache.commons.io.FilenameUtils
+     */
+    public static String separatorsToUnix(String path) {
+        return path != null && path.indexOf(92) != -1 ? path.replace('\\', '/') : path;
     }
 
     public ArchiveEntry(String root, String fileName, boolean compress, boolean encrypt) throws IOException {
