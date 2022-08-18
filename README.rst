@@ -6,6 +6,7 @@ arcdEx - Defold .arcd file extraction tool
 
 __ https://defold.com/
 
+.. contents::
 
 Features
 ========
@@ -144,8 +145,6 @@ with the `basis_universal`__ ``basisu`` tool::
 __ https://github.com/BinomialLLC/basis_universal
 
 
-
-============
 About arcdEx
 ============
 arcdEx was written by `Christian Weiske`__ and is licensed under the
