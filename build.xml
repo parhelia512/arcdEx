@@ -1,0 +1,38 @@
+<project name="arcdEx" basedir="." default="build">
+    <property name="src.dir"     value="src"/>
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir"     value="${build.dir}/jar"/>
+    <property name="lib.dir"     value="libs"/>
+
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
+
+    <target name="build" depends="clean,compile,jar"/>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
+    </target>
+
+    <target name="jar">
+        <mkdir dir="${jar.dir}"/>
+        <jar destfile="${jar.dir}/arcdEx.jar" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="de.cweiske.arcdex.Cli"/>
+            </manifest>
+        </jar>
+        <jar destfile="${jar.dir}/arcdEx.full.jar" basedir="${classes.dir}">
+            <zipgroupfileset dir="${lib.dir}" includes="*.jar" />
+            <manifest>
+                <attribute name="Main-Class" value="de.cweiske.arcdex.Cli"/>
+            </manifest>
+        </jar>
+    </target>
+
+</project>

@@ -40,6 +40,13 @@ They have to be combined before they can be used with arcdEx::
     $ cat game.arcd0 game.arcd1 > game.arcd
 
 
+Basic usage
+-----------
+When examples write ``arcdEx``, replace it with ``java -jar arcdEx.full.jar``::
+
+    $ java -jar arcdEx.full.jar --help
+
+
 Archive
 -------
 List archive contents::
@@ -155,3 +162,12 @@ and the protocol buffer source files.
 
 __ https://cweiske.de/
 __ https://www.gnu.org/licenses/agpl-3.0.en.html
+
+
+Dependencies
+------------
+Put them into the ``libs/`` directory:
+
+- `jcommander-1.82.jar <https://mvnrepository.com/artifact/com.beust/jcommander/1.82>`_
+- `lz4-java-1.8.0.jar <https://mvnrepository.com/artifact/org.lz4/lz4-java/1.8.0>`_
+- `protobuf-java-3.21.4.jar <https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java/3.21.4>`_
