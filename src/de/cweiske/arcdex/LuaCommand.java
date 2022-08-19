@@ -30,12 +30,38 @@ public class LuaCommand {
         Lua.LuaModule luac = Lua.LuaModule.parseFrom(luacInputStream);
         luacInputStream.close();
 
-        File fo = new File(luacPath.substring(0, luacPath.length() - 1));
-        if (verbose) {
-            System.out.println(outputPrefix + "Writing " + fo.getAbsolutePath());
+        com.dynamo.script.proto.Lua.LuaSource source = luac.getSource();
+
+        //.lua source
+        if (source.hasScript()) {
+            File fo = new File(luacPath.substring(0, luacPath.length() - 1));
+            if (verbose) {
+                System.out.println(outputPrefix + "Writing " + fo.getAbsolutePath());
+            }
+            FileOutputStream os = new FileOutputStream(fo);
+            os.write(source.getScript().toByteArray());
         }
-        FileOutputStream os = new FileOutputStream(fo);
-        os.write(luac.getSource().getScript().toByteArray());
+
+        //.luo bytecode 32bit
+        // see https://lua-users.org/lists/lua-l/2007-06/msg00300.html
+        if (source.hasBytecode()) {
+            File fo = new File(luacPath.substring(0, luacPath.length() - 1) + "o");
+            if (verbose) {
+                System.out.println(outputPrefix + "Writing " + fo.getAbsolutePath());
+            }
+            FileOutputStream os = new FileOutputStream(fo);
+            os.write(source.getBytecode().toByteArray());
+        }
+
+        //.luo64 bytecode 64bit
+        if (source.hasBytecode64()) {
+            File fo = new File(luacPath.substring(0, luacPath.length() - 1) + "o64");
+            if (verbose) {
+                System.out.println(outputPrefix + "Writing " + fo.getAbsolutePath());
+            }
+            FileOutputStream os = new FileOutputStream(fo);
+            os.write(source.getBytecode64().toByteArray());
+        }
     }
 
     protected void info(String luacPath) throws IOException {
@@ -43,8 +69,13 @@ public class LuaCommand {
         Lua.LuaModule luac = Lua.LuaModule.parseFrom(luacInputStream);
         luacInputStream.close();
 
-        System.out.println("Filename: " + luac.getSource().getFilename());
-        System.out.println("Script size: " + luac.getSource().getScript().size());
+        com.dynamo.script.proto.Lua.LuaSource source = luac.getSource();
+
+        System.out.println("Filename: " + source.getFilename());
+        System.out.println("Script size: " + source.getScript().size());
+        System.out.println("Lua source code: " + (source.hasScript() ? "yes" : "no"));
+        System.out.println("Lua bytecode: " + (source.hasBytecode() ? "yes" : "no"));
+        System.out.println("Lua bytecode 64: " + (source.hasBytecode64() ? "yes" : "no"));
 
         if (luac.getModulesCount() > 0) {
             System.out.println("Required modules:");
