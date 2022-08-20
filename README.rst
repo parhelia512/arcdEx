@@ -179,7 +179,7 @@ Download all files of a Defold web project
 1. Grab ``archive_files.json`` via your browser's network inspector
 2. Download the files::
 
-       $ jq -r .content[].pieces[].name < archive_files.json | xargs -L1 I{} wget http://example.org/archive_files_dir/{}
+       $ jq -r .content[].pieces[].name < archive_files.json | xargs -L1 -I{} wget http://example.org/archive_files_dir/{}
 
 
 Protobuf compilation
