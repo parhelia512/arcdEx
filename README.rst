@@ -6,6 +6,9 @@ arcdEx - Defold .arcd file extraction tool
 
 Supports manifest v4 (since Defold v1.2.183) and manifest v3 files (since Defold v1.2.142).
 
+Issues (feature requests + bug reports) have intentionally been disabled.
+Patches welcome.
+
 __ https://defold.com/
 __ https://github.com/defold/defold/blob/dev/engine/docs/ARCHIVE_FORMAT.md
 
