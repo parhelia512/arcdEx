@@ -37,7 +37,7 @@ public class TextureCommand {
             TextureImage.Image image = texture.getAlternatives(i);
 
             ByteString data = image.getData();
-            File fo = new File(texturecPath + "-" + i);
+            File fo = new File(texturecPath + "-" + i + "." + getFileExtension(image));
             if (verbose) {
                 System.out.println(outputPrefix + " Writing " + fo.getName());
             }
@@ -67,40 +67,84 @@ public class TextureCommand {
             System.out.println("Alternative #" + i);
             System.out.println(" Size: " + image.getWidth() + "x" + image.getHeight());
             System.out.println(" Original size: " + image.getOriginalWidth() + "x" + image.getOriginalHeight());
-            switch (image.getFormat()) {
-                case TEXTURE_FORMAT_LUMINANCE: System.out.println(" Format: Luminance"); break;
-                case TEXTURE_FORMAT_LUMINANCE_ALPHA: System.out.println(" Format: Luminance alpha"); break;
-
-                case TEXTURE_FORMAT_R_BC4: System.out.println(" Format: R BC4"); break;
-                case TEXTURE_FORMAT_RG_BC5: System.out.println(" Format: RG BC5"); break;
-
-                case TEXTURE_FORMAT_RGB: System.out.println(" Format: RGB"); break;
-                case TEXTURE_FORMAT_RGB_16BPP: System.out.println(" Format: RGB 16bpp"); break;
-                case TEXTURE_FORMAT_RGB_BC1: System.out.println(" Format: RGB BC1"); break;
-                case TEXTURE_FORMAT_RGB_ETC1: System.out.println(" Format: RGB ETC1"); break;
-                case TEXTURE_FORMAT_RGB_PVRTC_2BPPV1: System.out.println(" Format: RGB PVRTC 2BPPv1"); break;
-                case TEXTURE_FORMAT_RGB_PVRTC_4BPPV1: System.out.println(" Format: RGB PVRTC 4BPPv1"); break;
-
-                case TEXTURE_FORMAT_RGBA: System.out.println(" Format: RGBA"); break;
-                case TEXTURE_FORMAT_RGBA_16BPP: System.out.println(" Format: RGBA 16bpp"); break;
-                case TEXTURE_FORMAT_RGBA_ASTC_4x4: System.out.println(" Format: RGBA ASTC 4x4"); break;
-                case TEXTURE_FORMAT_RGBA_BC3: System.out.println(" Format: RGBA BC3"); break;
-                case TEXTURE_FORMAT_RGBA_BC7: System.out.println(" Format: RGBA BC7"); break;
-                case TEXTURE_FORMAT_RGBA_ETC2: System.out.println(" Format: RGBA ETC2"); break;
-                case TEXTURE_FORMAT_RGBA_PVRTC_2BPPV1: System.out.println(" Format: RGBA PVRTC 2BPPv1"); break;
-                case TEXTURE_FORMAT_RGBA_PVRTC_4BPPV1: System.out.println(" Format: RGBA PVRTC 4BPPv1"); break;
-                default: System.out.println(" Format: ??"); break;
-            }
-
-            switch (image.getCompressionType()) {
-                case COMPRESSION_TYPE_WEBP: System.out.println(" Compression: webp"); break;
-                case COMPRESSION_TYPE_DEFAULT: System.out.println(" Compression: default"); break;
-                case COMPRESSION_TYPE_BASIS_ETC1S: System.out.println(" Compression: basis etc1s"); break;
-                case COMPRESSION_TYPE_BASIS_UASTC: System.out.println(" Compression: basis UASTC"); break;
-                case COMPRESSION_TYPE_WEBP_LOSSY: System.out.println(" Compression: webp lossy"); break;
-            }
-
+            System.out.println(" Format: " + getFormatName(image.getFormat()));
+            System.out.println(" Compression: " + getCompressionTypeName(image.getCompressionType()));
             System.out.println(" Compression flags: " + image.getCompressionFlags());
         }
+    }
+
+    protected static String getFormatName(TextureImage.TextureFormat format) {
+        switch (format) {
+            case TEXTURE_FORMAT_LUMINANCE:
+                return "Luminance";
+            case TEXTURE_FORMAT_LUMINANCE_ALPHA:
+                return "Luminance alpha";
+
+            case TEXTURE_FORMAT_R_BC4:
+                return "R BC4";
+            case TEXTURE_FORMAT_RG_BC5:
+                return "RG BC5";
+
+            case TEXTURE_FORMAT_RGB:
+                return "RGB";
+            case TEXTURE_FORMAT_RGB_16BPP:
+                return "RGB 16bpp";
+            case TEXTURE_FORMAT_RGB_BC1:
+                return "RGB BC1";
+            case TEXTURE_FORMAT_RGB_ETC1:
+                return "RGB ETC1";
+            case TEXTURE_FORMAT_RGB_PVRTC_2BPPV1:
+                return "RGB PVRTC 2BPPv1";
+            case TEXTURE_FORMAT_RGB_PVRTC_4BPPV1:
+                return "RGB PVRTC 4BPPv1";
+
+            case TEXTURE_FORMAT_RGBA:
+                return "RGBA";
+            case TEXTURE_FORMAT_RGBA_16BPP:
+                return "RGBA 16bpp";
+            case TEXTURE_FORMAT_RGBA_ASTC_4x4:
+                return "RGBA ASTC 4x4";
+            case TEXTURE_FORMAT_RGBA_BC3:
+                return "RGBA BC3";
+            case TEXTURE_FORMAT_RGBA_BC7:
+                return "RGBA BC7";
+            case TEXTURE_FORMAT_RGBA_ETC2:
+                return "RGBA ETC2";
+            case TEXTURE_FORMAT_RGBA_PVRTC_2BPPV1:
+                return "RGBA PVRTC 2BPPv1";
+            case TEXTURE_FORMAT_RGBA_PVRTC_4BPPV1:
+                return "RGBA PVRTC 4BPPv1";
+        }
+
+        return "unknown";
+    }
+
+    protected static String getCompressionTypeName(TextureImage.CompressionType compressionType) {
+        switch (compressionType) {
+            case COMPRESSION_TYPE_WEBP: return "webp";
+            case COMPRESSION_TYPE_DEFAULT: return "default";
+            case COMPRESSION_TYPE_BASIS_ETC1S: return "basis etc1s";
+            case COMPRESSION_TYPE_BASIS_UASTC: return "basis UASTC";
+            case COMPRESSION_TYPE_WEBP_LOSSY: return "webp lossy";
+        }
+        return "unknown";
+    }
+
+    protected static String getFileExtension(TextureImage.Image image)
+    {
+        switch (image.getCompressionType()) {
+            case COMPRESSION_TYPE_WEBP:
+                return "webp";
+            case COMPRESSION_TYPE_WEBP_LOSSY:
+                return "webp";
+            case COMPRESSION_TYPE_BASIS_ETC1S:
+                return "basis";
+            case COMPRESSION_TYPE_BASIS_UASTC:
+                return "basis";
+            case COMPRESSION_TYPE_DEFAULT:
+                return "unknown";
+        }
+
+        return "unknown";
     }
 }
