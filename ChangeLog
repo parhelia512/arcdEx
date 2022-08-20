@@ -1,0 +1,9 @@
+2022-08-20 v0.2.0
+
+	- Add support for manifest v3
+	- Add file extensions to extracted texture files
+	- Add support for lua bytecode extraction
+
+2022-08-18 v0.1.0
+
+	- First version

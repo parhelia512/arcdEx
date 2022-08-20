@@ -2,9 +2,12 @@
 arcdEx - Defold .arcd file extraction tool
 ==========================================
 
-`Defold game engine`__ archive v4 file extractor.
+`Defold game engine`__ archive__ v4 file extractor.
+
+Supports manifest v4 (since Defold v1.2.183) and manifest v3 files (since Defold v1.2.142).
 
 __ https://defold.com/
+__ https://github.com/defold/defold/blob/dev/engine/docs/ARCHIVE_FORMAT.md
 
 .. contents::
 
@@ -85,6 +88,9 @@ Extract a ``.luac`` and the Lua source code inside it::
 
 Lua scripts
 -----------
+Web projects up to Defold 1.3.4 contain the Lua source code.
+Desktop applications only contain the compiled Lua bytecode.
+
 Show information about a ``.luac`` file::
 
     $ arcdEx lua -i extract/libs_project/cameras.luac
@@ -125,14 +131,14 @@ Extract texture files::
 
     $ arcdEx texture -v extract/assets/images/game/game.texturec
     Extracting texturec file: /home/user/extract/assets/images/game/game.texturec
-     Writing game.texturec-0
+     Writing game.texturec-0.basis
 
 Texture data files often are in a format that can be directly uploaded
 to the graphics card as a texture.
 When compressed with "basis UASTC" they can be converted into a ``.png`` file
 with the `basis_universal`__ ``basisu`` tool::
 
-    $ basisu -unpack -no_ktx -file extract/assets/images/game/game.texturec-0
+    $ basisu -unpack -no_ktx -file extract/assets/images/game/game.texturec-0.basis
     Basis Universal GPU Texture Compressor v1.16.3
     Copyright (C) 2019-2022 Binomial LLC, All rights reserved
     Using SSE 4.1: 1, Multithreading: 1, Zstandard support: 1, OpenCL: 0
@@ -152,6 +158,46 @@ with the `basis_universal`__ ``basisu`` tool::
 __ https://github.com/BinomialLLC/basis_universal
 
 
+Development notes
+=================
+
+Dependencies
+------------
+Put them into the ``libs/`` directory:
+
+- `jcommander-1.82.jar <https://mvnrepository.com/artifact/com.beust/jcommander/1.82>`_
+- `lz4-java-1.8.0.jar <https://mvnrepository.com/artifact/org.lz4/lz4-java/1.8.0>`_
+- `protobuf-java-3.21.4.jar <https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java/3.21.4>`_
+
+
+Download all files of a Defold web project
+------------------------------------------
+
+1. Grab ``archive_files.json`` via your browser's network inspector
+2. Download the files::
+
+       $ jq -r .content[].pieces[].name < archive_files.json | xargs -L1 I{} wget http://example.org/archive_files_dir/{}
+
+
+Protobuf compilation
+--------------------
+Compile all the ``.proto`` files in Defold::
+
+    $ mkdir generated
+    $ find . -name '*.proto' | grep -v test | xargs -L1 protoc --java_out=generated -I. -Iengine/ddf/src/ -I./engine/gamesys/proto/ -I./engine/gameobject/proto/ -I./engine/script/src/
+
+Binary protobuf files can be inspected with protobuf-inspector__.
+
+__ https://github.com/mildsunrise/protobuf-inspector
+
+
+Links
+=====
+
+- `Unfold <https://github.com/JustAPotota/Unfold>`_ - unpacker written
+  in Defold itself. Did not work for me.
+
+
 About arcdEx
 ============
 arcdEx was written by `Christian Weiske`__ and is licensed under the
@@ -162,12 +208,3 @@ and the protocol buffer source files.
 
 __ https://cweiske.de/
 __ https://www.gnu.org/licenses/agpl-3.0.en.html
-
-
-Dependencies
-------------
-Put them into the ``libs/`` directory:
-
-- `jcommander-1.82.jar <https://mvnrepository.com/artifact/com.beust/jcommander/1.82>`_
-- `lz4-java-1.8.0.jar <https://mvnrepository.com/artifact/org.lz4/lz4-java/1.8.0>`_
-- `protobuf-java-3.21.4.jar <https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java/3.21.4>`_
