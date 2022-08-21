@@ -4,6 +4,8 @@ import com.dynamo.bob.archive.ArchiveEntry;
 import com.dynamo.bob.archive.ArchiveReaderProtected;
 import com.dynamo.crypt.Crypt;
 import com.dynamo.liveupdate.proto.Manifest;
+import com.dynamo.liveupdate.proto.Manifest1;
+import com.dynamo.liveupdate.proto.Manifest2;
 import com.dynamo.liveupdate.proto.Manifest3;
 import com.google.protobuf.InvalidProtocolBufferException;
 import net.jpountz.lz4.LZ4Factory;
@@ -25,6 +27,10 @@ public class BetterArchiveReader extends ArchiveReaderProtected {
 
     protected Manifest.ManifestData manifestv4;
     protected Manifest3.ManifestData manifestv3;
+
+    protected Manifest2.ManifestData manifestv2;
+
+    protected Manifest1.ManifestData manifestv1;
 
     public BetterArchiveReader(String archiveIndexFilepath, String archiveDataFilepath, String manifestFilepath) {
         super(archiveIndexFilepath, archiveDataFilepath, manifestFilepath);
@@ -73,6 +79,22 @@ public class BetterArchiveReader extends ArchiveReaderProtected {
                         e.relName = resource.getUrl();
                     }
                 }
+
+            } else if (this.manifestv2 != null) {
+                for (Manifest2.ResourceEntry resource : manifestv2.getResourcesList()) {
+                    if (matchHash(e.hash, resource.getHash().getData().toByteArray(), this.hashLength)) {
+                        e.fileName = resource.getUrl();
+                        e.relName = resource.getUrl();
+                    }
+                }
+
+            } else if (this.manifestv1 != null) {
+                for (Manifest1.ResourceEntry resource : manifestv1.getResourcesList()) {
+                    if (matchHash(e.hash, resource.getHash().getData().toByteArray(), this.hashLength)) {
+                        e.fileName = resource.getUrl();
+                        e.relName = resource.getUrl();
+                    }
+                }
             }
 
             entries.add(e);
@@ -93,8 +115,10 @@ public class BetterArchiveReader extends ArchiveReaderProtected {
     /**
      * Load manifest 4, fall back to manifest v3 loading
      *
-     * v3: https://github.com/defold/defold/commit/17c765d7dcc970b1be616e40449e1f3905263d24
-     * v4: https://github.com/defold/defold/commit/4eebea163ced71074f10761ea7774bb2b2b38faf
+     * v1: https://github.com/defold/defold/commit/b895bb76c4c53b1c65e20534323d7954afaa2358 1.2.97
+     * v2: https://github.com/defold/defold/commit/87d79e3ff1486badb55d02020f4b2d07be08cd40 1.2.133
+     * v3: https://github.com/defold/defold/commit/17c765d7dcc970b1be616e40449e1f3905263d24 1.2.142
+     * v4: https://github.com/defold/defold/commit/4eebea163ced71074f10761ea7774bb2b2b38faf 1.2.183
      */
     protected void loadManifest() throws InvalidProtocolBufferException {
         int version;
@@ -128,6 +152,16 @@ public class BetterArchiveReader extends ArchiveReaderProtected {
         if (version == 3) {
             //load manifest v3
             this.manifestv3 = Manifest3.ManifestData.parseFrom(this.manifestFile.getData());
+            return;
+
+        } else if (version == 2) {
+            //load manifest v2
+            this.manifestv2 = Manifest2.ManifestData.parseFrom(this.manifestFile.getData());
+            return;
+
+        } else if (version == 1) {
+            //load manifest v1
+            this.manifestv1 = Manifest1.ManifestData.parseFrom(this.manifestFile.getData());
             return;
         }
 

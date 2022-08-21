@@ -4,7 +4,12 @@ arcdEx - Defold .arcd file extraction tool
 
 `Defold game engine`__ archive__ v4 file extractor.
 
-Supports manifest v4 (since Defold v1.2.183) and manifest v3 files (since Defold v1.2.142).
+Supports manifest files in versions:
+
+- v4 (since Defold v1.2.183)
+- v3 (since Defold v1.2.142)
+- v2 (since Defold v1.2.133)
+- v1 (since Defold v1.2.97)
 
 Issues (feature requests + bug reports) have intentionally been disabled.
 Patches welcome.
